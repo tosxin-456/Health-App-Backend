@@ -5,6 +5,7 @@ const userModel = require('../Models/userModel')
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-pro"});
 
 
 
@@ -15,15 +16,13 @@ const newChatUser = async (req, res) => {
     if (!user) {
       return res.status(404).json('No user with this account exists');
     }
-    const genAI = new GoogleGenerativeAI(process.env.API_KEY);
-      // For text-only input, use the gemini-pro model
-      const model = genAI.getGenerativeModel({ model: "gemini-pro"});
     
-      const prompt = req.body.question    
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const text = response.text();
-      // console.log(text);
+    
+    const prompt = req.body.question + ',in relation to health '
+    
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
     const newChat = new chatModel({
       sender: patient,
       question: prompt, // Assuming 'question' should be set to the prompt
@@ -36,9 +35,7 @@ const newChatUser = async (req, res) => {
     console.error(error);
     return res.status(500).json('An error occurred');
   }
-}
-
-   
+} 
 
 const allChatsUser = async(req, res) => {
   try {
