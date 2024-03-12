@@ -19,8 +19,8 @@ const newChatUser = async (req, res) => {
       const model = genAI.getGenerativeModel({ model: "gemini-pro"});
       const prompt = req.body.question
       const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const text = await response.text();
+      const response =  result.response;
+      const text =  response.text();
       return  res.status(200).json(text)
       const newChat = new chatModel({
         sender: patient,
