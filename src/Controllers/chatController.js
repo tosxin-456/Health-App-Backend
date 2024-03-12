@@ -13,27 +13,31 @@ const newChatUser = async (req, res) => {
     const patient = req.user._id
     const user = await userModel.findOne({ _id: patient });
     if (!user) {
-      res.status(404).json('no user with this account exists')
+      return res.status(404).json('No user with this account exists');
     }
-    else {
+    const genAI = new GoogleGenerativeAI(process.env.API_KEY);
+      // For text-only input, use the gemini-pro model
       const model = genAI.getGenerativeModel({ model: "gemini-pro"});
-      const prompt = req.body.question
+    
+      const prompt = req.body.question    
       const result = await model.generateContent(prompt);
-      const response =  result.response;
-      const text =  response.text();
-      return  res.status(200).json(text)
-      const newChat = new chatModel({
-        sender: patient,
-        question,
-        response:text
-      })
-      newChat.save()
-    }
+      const response = await result.response;
+      const text = response.text();
+      // console.log(text);
+    const newChat = new chatModel({
+      sender: patient,
+      question: prompt, // Assuming 'question' should be set to the prompt
+      response: text
+    });
+    await newChat.save(); // Save the new chat message
+
+    return res.status(200).json(text); // Send the generated text in the response
   } catch (error) {
-    res.status(429).json('an error occured')
-    console.log(error)
+    console.error(error);
+    return res.status(500).json('An error occurred');
   }
 }
+
    
 
 const allChatsUser = async(req, res) => {
