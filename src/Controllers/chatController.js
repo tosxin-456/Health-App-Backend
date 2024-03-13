@@ -18,7 +18,7 @@ const newChatUser = async (req, res) => {
     }
     
     
-    const prompt = req.body.question + ',in relation to health '
+    const prompt = req.body.question
     
     const result = await model.generateContent(prompt);
     const response = await result.response;
