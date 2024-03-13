@@ -153,6 +153,7 @@ const medicationIntake = async (req, res) => {
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
     const currentMonth = currentDate.getMonth() + 1; // Note: Month is zero-based, so we add 1
+    const currentDay = currentDate.getDate();
 
     const startDate = new Date(currentYear, currentMonth - 1, 1); // Start of the current month
     const endDate = new Date(currentYear, currentMonth, 0); // End of the current month
@@ -189,10 +190,14 @@ const medicationIntake = async (req, res) => {
     // Create an array with days from 1 to the last day of the month
     const daysInMonth = Array.from({ length: endDate.getDate() }, (_, i) => i + 1);
 
-    // Initialize the response array with default counts of 0 for all days
+    // Initialize the response array
     const response = daysInMonth.map(day => {
-      const data = medicationData.find(item => item.day === day);
-      return data ? data : { day, medicationTaken: 0, medicationNotTaken: 0 };
+      if (day > currentDay) {
+        return { day, medicationTaken: null, medicationNotTaken: null }; // Day hasn't been reached yet
+      } else {
+        const data = medicationData.find(item => item.day === day);
+        return data ? data : { day, medicationTaken: 0, medicationNotTaken: 0 }; // Day has passed and no data available
+      }
     });
 
     return res.status(200).json(response);
@@ -201,6 +206,7 @@ const medicationIntake = async (req, res) => {
     return res.status(500).json('Internal Server Error');
   }
 };
+
 
 
 
