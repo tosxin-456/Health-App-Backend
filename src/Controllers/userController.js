@@ -117,7 +117,7 @@ const login = async (req, res) => {
     if (user) {
       const passwordMatched = await hashValue( password )
       if (passwordMatched === user.password) {
-        const payload = {user_id:user._id,name:user.name, email:user.email, role:user.role}
+        const payload = {user_id:user._id,name:user.name, email:user.email, role:user.role, avatar: user.avatar}
         const secretKey = process.env.JWT_SECRET
         const token = jwt.sign(payload, secretKey)
         res.status(200).json(token)

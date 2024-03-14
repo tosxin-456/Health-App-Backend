@@ -19,6 +19,17 @@ const updateProfile = async (req, res) => {
   }
 }
 
+const userProfile = async (req,res)=>{
+  try {
+  const userId = req.user.email;
+   const profile =  await profileModel.findOne({email:userId})
+    res.status(200).json(profile)
+  }
+  catch (error) {
+    console.error(error);
+    res.status(500).json('could not get the user details'); 
+  }
+}
 
 
-module.exports = { updateProfile }
+module.exports = { updateProfile, userProfile }

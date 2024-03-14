@@ -36,6 +36,8 @@ route.get('/schedule/single', jwtToken.verifyToken, schedule.getScheduleByIdForU
 
 route.post('/profileUpdate', jwtToken.verifyToken, profileUpdate.updateProfile)
 
+route.get('/profile', jwtToken.verifyToken, profileUpdate.userProfile)
+
 route.get('/pie', jwtToken.verifyToken, graphs.schedulesByUserInTotal)
 
 route.get('/bar', jwtToken.verifyToken, graphs.individualSchedulesForUser)

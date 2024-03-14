@@ -7,7 +7,7 @@ const profileSchema = new Schema({
     type: String,
     required: true
   },
-  __id: {
+  user: {
     type: mongoose.Schema.Types.ObjectId,
     required: true
   },
