@@ -7,7 +7,56 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-pro"});
 
+function fetchCurrentDate() {
+  // Function to fetch the current date and time
+  const getCurrentDate = () => {
+    const currentDate = new Date();
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June", "July",
+      "August", "September", "October", "November", "December"
+    ];
+    const currentMonthIndex = currentDate.getMonth();
+    const currentMonthName = monthNames[currentMonthIndex];
+    const currentDay = currentDate.getDate();
+    const currentYear = currentDate.getFullYear();
 
+    // Get hours, minutes, and AM/PM indicator
+    let hours = (currentDate.getHours() + 1) % 24; // Increment and wrap around within 24 hours
+    const minutes = currentDate.getMinutes();
+    const amPm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12 || 12; // Convert 24-hour format to 12-hour format
+
+    // Format time
+    const formattedTime = `${hours}:${minutes < 10 ? '0' : ''}${minutes} ${amPm}`;
+
+    // Combine date and time
+    return `${currentMonthName} ${currentDay}, ${currentYear} At ${formattedTime}`;
+  };
+
+  // Return the getCurrentDate function
+  return getCurrentDate;
+}
+
+// Get the function that fetches the current date and time
+const getCurrentDate = fetchCurrentDate();
+
+// Function to update the fullDate with the current date and time
+const updateFullDate = () => {
+  const fullDate = getCurrentDate(); // Get the current date and time
+  console.log("Full Date:", fullDate); // Log the current date and time
+  return fullDate; // Return the current date and time
+};
+
+// Call updateFullDate initially to get the current date and time
+let fullDate = updateFullDate();
+
+// Log the initial fullDate
+console.log(fullDate);
+
+// Set interval to call updateFullDate every minute
+setInterval(() => {
+  fullDate = updateFullDate(); // Update the fullDate with the current date and time
+}, 60000); // 60000 milliseconds = 1 minute
 
 const newChatUser = async (req, res) => {
   try {
@@ -26,7 +75,8 @@ const newChatUser = async (req, res) => {
     const newChat = new chatModel({
       sender: patient,
       question: prompt, // Assuming 'question' should be set to the prompt
-      response: text
+      response: text,
+      time:fullDate
     });
     await newChat.save(); // Save the new chat message
 

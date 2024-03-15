@@ -17,8 +17,8 @@ const chatSchema = new Schema({
     required: true
   },
   time: {
-    type: Date,
-    timestamps: true
+    type: String,
+    required:true
   }
 });
 
