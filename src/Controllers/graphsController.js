@@ -67,6 +67,7 @@ const individualSchedulesForUser = async (req, res) => {
         }
       }
     ]);
+    
 
     const treatment = await Schedule.aggregate([
       {
